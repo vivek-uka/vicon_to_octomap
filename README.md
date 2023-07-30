@@ -10,7 +10,7 @@ iners only. The files are well documented, feel free to poke around.
     catkin_make
     source devel/setup.bash
     roscore
-    rosrun convexhull_demo convex_node
+    rosrun vicon_to_octomap convex_node
     rviz
 
 ## Build and Run (text output only)

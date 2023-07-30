@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>convexhull_demo</name>
+  <name>vicon_to_octomap</name>
   <version>0.0.0</version>
   <description>package to demo 3D incremental convexhull algorithm</description>
 

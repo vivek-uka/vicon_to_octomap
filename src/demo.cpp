@@ -41,7 +41,7 @@ Master::Master(ros::NodeHandle& nh){
 int Master::Loop(){
   while(ros::ok())
   { 
-    if(this->random)
+    if(this->random && false)
     {
       double x = (std::rand()%10 - 5) * 1.f;
       double y = (std::rand()%10 - 5) * 1.f;
@@ -51,15 +51,20 @@ int Master::Loop(){
     }
     else
     {
-      this->tests = { 
-          {1,2,1}, {2,1,1}, {1,1,1}, {2,2,1}, {1,2,2}, {2,1,2}, {1,1,2}, {2,2,2},  
-          {0,3,0}, {3,0,0}, {0,0,0}, {3,3,0}, {0,3,3}, {3,0,3}, {0,0,3}, {3,3,3}}; 
+      this->tests ={{-2.0, -2.0, 0.5}, {-2.0, -1.0, 0.5}, {-2.5, -1.0, 0.5}, {-2.5, -2.0, 0.5},
+                                {-2.0, -2.0, 0.3}, {-2.0, -1.0, 0.3}, {-2.5, -1.0, 0.3}, {-2.5, -2.0, 0.3}}; 
     }
     std::vector<Point3D> vecs;
     int n = this->cnt >= tests.size() ? tests.size() : this->cnt;
-    for(int i =0 ; i < n; i++)
+    for(int i =0 ; i < tests.size(); i++)
       vecs.emplace_back(tests[i][0], tests[i][1], tests[i][2]);
+    std :: cout << vecs.size() << "\n";
     ConvexHull c(vecs);
+
+
+    Point3D pt1(-2.25, -1.75, 0.4), pt2(0, 0 ,0);
+    ROS_INFO_STREAM(c.Contains(pt1) << " " << c.Contains(pt2));
+    
     this->VizPolyhedron(c.GetFaces());
     if(c.Size() >= 4) this->VizPoints(vecs, c);
     this->cnt++;
