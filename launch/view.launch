@@ -4,21 +4,22 @@
   <!-- <node pkg="rosbag" type="record" name="rosbag_record" args="record -a -o=$(find swarm_nav)/data/bag/"/>    -->
 
   <arg name="world_frame_id" default="map"/> <!--  -->
-  <arg name="world_file_name" default="temp_octomap.bt"/> <!-- Octomap file name, it must be bt file -->
+  <arg name="world_file_name" default="vicon_room.bt"/> <!-- Octomap file name, it must be bt file -->
   <arg name="world_resolution" default="0.1"/> 
   <arg name="display_sim" default="true" />
 
   <node pkg="vicon_to_octomap" type="generate_octomap" name="generate_octomap" output="screen">
-    <param name="rviz/display_sim" value="$(arg display_sim)" />
+    <param name="world/resolution" value="$(arg world_resolution)"/>
+    <param name="world/file_name" value="$(arg world_file_name)"/>
   </node>
 
   
   <node pkg="rviz" type="rviz" name="rviz" args="-d $(find vicon_to_octomap)/launch/rviz_config/default.rviz" if="$(arg display_sim)"/>
 
   <node pkg="octomap_server" type="octomap_server_node" name="octomap_server"
-        args="$(find vicon_to_octomap)/world/$(arg world_file_name)">
-    <param name="resolution"                 value="$(arg world_resolution)" />
-    <param name="frame_id"                   value="$(arg world_frame_id)" type="string"/>
+        args="$(find vicon_to_octomap)/world/vicon_room_obs.bt">
+    <param name="resolution"                 value="$(arg world_resolution)"/>
+    <param name="frame_id"                   value="$(arg world_frame_id)"/>
     <param name="sensor_model/max_range"     value="5.0" />
     <param name="height_map"                 value="true"/>
     <param name="color/r"                    value="0.2" />

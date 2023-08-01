@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   geometry_msgs
   visualization_msgs
+  vicon_bridge
 )
 
 find_package(octomap REQUIRED)
@@ -34,12 +35,9 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-set(SOURCES ${SOURCES}
+add_library(convexhull_lib
   src/convexhull.cpp
 )
 
-add_executable(convex_node src/demo.cpp ${SOURCES})
-target_link_libraries(convex_node ${catkin_LIBRARIES})
-
-add_executable(generate_octomap src/genocto.cpp ${SOURCES})
-target_link_libraries(generate_octomap ${catkin_LIBRARIES})
+add_executable(generate_octomap src/genocto.cpp)
+target_link_libraries(generate_octomap convexhull_lib ${catkin_LIBRARIES})
