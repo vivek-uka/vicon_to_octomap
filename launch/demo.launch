@@ -1,0 +1,12 @@
+<launch>
+
+  <!-- <rosparam command="load" file="$(find swarm_nav)/params/config_am_swarm.yaml"/> -->
+  <!-- <node pkg="rosbag" type="record" name="rosbag_record" args="record -a -o=$(find swarm_nav)/data/bag/"/>    -->
+
+
+  <node pkg="vicon_to_octomap" type="convex_demo" name="convex_demo" output="screen">
+  </node>
+
+  
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find vicon_to_octomap)/launch/rviz_config/demo.rviz" />
+</launch>
