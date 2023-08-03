@@ -43,15 +43,19 @@ int main(int argc, char **argv) {
                      {2.0, 1.0, 0.2, 0}, 
                      {2.5, 1.0, 0.2, 0}, 
                      {2.5, 2.0, 0.2, 0}, 
-                     {-1.47983, 1.17005, 0.0579177, 1},
-                    {-0.937562, 1.20197, 0.0381817, 1},
-                    {-0.951067, 1.52978, 0.0381255, 1},
-                    {-1.49617, 1.53334, 0.0457832, 1},
-                    {-1.40594, 1.18383, 0.662371, 1},
-                    {-1.20532, 1.1923, 0.656429, 1},
-                    {-1.21813, 1.53791, 0.644181, 1},
-                    {-1.41878, 1.52569, 0.657523, 1}};
+                     {-1.47983, 1.17005, 0.0579177, 11},
+                     {-0.937562, 1.20197, 0.0381817, 11},
+                     {-0.951067, 1.52978, 0.0381255, 11},
+                     {-1.49617, 1.53334, 0.0457832, 11},
+                     {-1.40594, 1.18383, 0.662371, 11},
+                     {-1.20532, 1.1923, 0.656429, 11},
+                     {-1.21813, 1.53791, 0.644181, 11},
+                     {-1.41878, 1.52569, 0.657523, 11}};
 
+    buildPoleAndRing(0, 1, 0.8);
+    buildPoleAndRing(-2, -2, 0.8);
+    buildTrap();
+    
     received = true;
     bool modified = false;
     ros::Rate rate(10);
@@ -61,15 +65,22 @@ int main(int argc, char **argv) {
             
             modified = true;
             std::vector<Point3D> vecs;
-            int prev_obs_id = -1, curr_obs_id;
+            int prev_obs_id = -1, curr_obs_id, hull_cnt = 0;
             for (int i = 0; i < vicon_markers.size() ; i++) {
-                std :: cout << "{" << vicon_markers[i][0] << ", " << vicon_markers[i][1] << ", " << vicon_markers[i][2] << "},";
+                std :: cout << "{" << vicon_markers[i][0] << ", " << vicon_markers[i][1] << ", " << vicon_markers[i][2] << "}," << "\n";
                 curr_obs_id = vicon_markers[i][3];
                 if (prev_obs_id == curr_obs_id || prev_obs_id == -1) {
                     vecs.emplace_back(vicon_markers[i][0], vicon_markers[i][1], vicon_markers[i][2]);
                 }
                 else{
+                    if(prev_obs_id == RingInner1){
+                        ring_ids.push_back(hull_cnt);
+                    }
+                    if(prev_obs_id == RingInner2){
+                        ring_ids.push_back(hull_cnt);
+                    }
                     hull_obstacles.emplace_back(ConvexHull(vecs));
+                    hull_cnt++;
                     vecs.clear();
                     i--;        
                 }
@@ -90,13 +101,40 @@ int main(int argc, char **argv) {
                 for (double y = -y_m / 2.0; y < y_m / 2.0; y += world_resolution/2) {
                     for (double z = 0.0; z < z_m; z += world_resolution/2) {
                         octomap::point3d point(x, y, z);
+                        
+                        octree.updateNode(point, false); // Set the voxel as occupied
+                            
+                            
+                    }
+                        
+                }
+            }
+            
+
+            // Iterate through the 3D space and set some voxels as occupied
+            for (double x = -x_m / 2.0; x < x_m / 2.0; x += world_resolution/2) {
+                for (double y = -y_m / 2.0; y < y_m / 2.0; y += world_resolution/2) {
+                    for (double z = 0.0; z < z_m; z += world_resolution/2) {
+                        octomap::point3d point(x, y, z);
                         Point3D pt(x, y, z);
 
                        for(int k = 0; k < hull_obstacles.size(); k++){
-                            bool inside = hull_obstacles[k].Contains(pt); 
-                            if(inside){
-                             octree.updateNode(point, true); // Set the voxel as occupied
-                                break;
+                            if(std::find(ring_ids.begin(), ring_ids.end(), k) != ring_ids.end()){
+                                bool inner = hull_obstacles[k].Contains(pt);
+                                bool outer =  hull_obstacles[k+1].Contains(pt);
+
+                                if(!inner && outer){
+                                    octree.updateNode(point, true); // Set the voxel as occupied
+                                    break;    
+                                }
+                                k++;
+                            }
+                            else{
+                                bool inside = hull_obstacles[k].Contains(pt); 
+                                if(inside){
+                                    octree.updateNode(point, true); // Set the voxel as occupied
+                                    break;
+                                }
                             }
                         }
                         
@@ -147,6 +185,12 @@ int main(int argc, char **argv) {
                 return 1;
             }
 
+            output_file_path = ros::package::getPath("swarm_nav") + "/world/vicon_room_obs.bt";
+            if (!octree.writeBinary(output_file_path)) {
+                ROS_ERROR_STREAM("Failed to write modified octomap to file: " << output_file_path);
+                return 1;
+            }
+
             ROS_INFO_STREAM("New octomap generated.");
             
         }
@@ -163,7 +207,7 @@ int main(int argc, char **argv) {
                 //     vis.push_back(so);
             }
             vis_pts.markers.clear();
-             for(int k = 0; k < in_hull_points.size(); k++){
+             for(int k = 0; k < vicon_markers.size(); k++){
                         marker = visualization_msgs :: Marker();
                         marker.header.frame_id = "/map";
                         marker.id = k;
@@ -178,9 +222,9 @@ int main(int argc, char **argv) {
                             marker.scale.y = 0.02;
                             marker.scale.z = 0.02;                       
                             marker.pose.orientation.w = 1.0;
-                            marker.pose.position.x = in_hull_points[k][0];
-                            marker.pose.position.y = in_hull_points[k][1]; 
-                            marker.pose.position.z = in_hull_points[k][2]; 
+                            marker.pose.position.x = vicon_markers[k][0];
+                            marker.pose.position.y = vicon_markers[k][1]; 
+                            marker.pose.position.z = vicon_markers[k][2]; 
                             vis_pts.markers.push_back(marker);
                         
              }

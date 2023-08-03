@@ -15,7 +15,6 @@ find_package(catkin REQUIRED COMPONENTS
   visualization_msgs
   vicon_bridge
 )
-find_package(Eigen3)
 
 find_package(octomap REQUIRED)
 include_directories(${OCTOMAP_INCLUDE_DIRS})
@@ -42,9 +41,3 @@ add_library(convexhull_lib
 
 add_executable(generate_octomap src/genocto.cpp)
 target_link_libraries(generate_octomap convexhull_lib ${catkin_LIBRARIES})
-
-add_executable(convex_demo src/demo.cpp)
-target_link_libraries(convex_demo convexhull_lib ${catkin_LIBRARIES})
-
-add_executable(test_lp src/test.cpp)
-target_link_libraries(test_lp ${catkin_LIBRARIES})
