@@ -12,17 +12,17 @@
 
 std::vector<std::vector<double>> vicon_markers;
 std::vector<int> ring_ids;
-std::vector<double> trap_center({0.0, 0.0, 1.0});
+std::vector<double> trap_center({0.0, 0.0, 0.75});
 
-float trap_middle_length = 2.0;
-float trap_side_length = 1.0;
+float trap_middle_length = 1.5;
+float trap_side_length = 0.65;
 int pole_cnt = 0;
 
-float pole_radius = 0.12 * sqrt(2) / 2;
-float ring_inner_radius = 0.3 * sqrt(2);
+float pole_radius = 0.15 * sqrt(2) / 2;
+float ring_inner_radius = 0.40;
 float ring_outer_radius = ring_inner_radius + 0.1;
 
-enum Obstacles {Ladder = 0, Box, TrapBlock1, TrapBlock2, TrapBlock3, Pole1, Pole2, RingInner1, RingInner2, RingOuter1, RingOuter2};
+enum Obstacles {Ladder = 0, Box, TrapBlock1, TrapBlock2, TrapBlock3, Pole1, Pole2, Pole3, RingInner1, RingInner2, RingOuter1, RingOuter2};
 bool received = false;
 
 
@@ -34,32 +34,32 @@ void buildPoleAndRing(double x_center, double y_center, double z_center){
           vicon_markers.push_back({x_center + pole_radius * cos(angles[k]), y_center + pole_radius * sin(angles[k]), z_center, Pole1});
           vicon_markers.push_back({x_center + pole_radius * cos(angles[k]), y_center + pole_radius * sin(angles[k]), 0.0, Pole1});
       }
-
-      for(int k = 0; k < 4; k++){
-          vicon_markers.push_back({x_center + ring_inner_radius * cos(angles[k]), y_center+0.1, 1.0 + ring_inner_radius * sin(angles[k]), RingInner1});
-          vicon_markers.push_back({x_center + ring_inner_radius * cos(angles[k]), y_center-0.1, 1.0 + ring_inner_radius * sin(angles[k]), RingInner1});
+      float angle = 0;
+      while(angle < 360.0){
+          vicon_markers.push_back({x_center - 0.42 + ring_inner_radius * cos(angle*M_PI/180), y_center+0.1, (z_center - 0.28) + ring_inner_radius * sin(angle*M_PI/180), RingInner1});
+          vicon_markers.push_back({x_center - 0.42 + ring_inner_radius * cos(angle*M_PI/180), y_center-0.1, (z_center - 0.28) + ring_inner_radius * sin(angle*M_PI/180), RingInner1});
+            angle += 1;
       }
 
-      for(int k = 0; k < 4; k++){
-          vicon_markers.push_back({x_center + ring_outer_radius * cos(angles[k]), y_center-0.1, 1.0 + ring_outer_radius * sin(angles[k]), RingOuter1});
-          vicon_markers.push_back({x_center + ring_outer_radius * cos(angles[k]), y_center+0.1, 1.0 + ring_outer_radius * sin(angles[k]), RingOuter1});
+        angle = 0;
+      while(angle < 360.0){
+          vicon_markers.push_back({x_center -0.42 + ring_outer_radius * cos(angle*M_PI/180), y_center-0.1, (z_center - 0.28) + ring_outer_radius * sin(angle*M_PI/180) , RingOuter1});
+          vicon_markers.push_back({x_center -0.42 + ring_outer_radius * cos(angle*M_PI/180), y_center+0.1, (z_center - 0.28) + ring_outer_radius * sin(angle*M_PI/180) , RingOuter1});
+        angle += 1;
       }
       pole_cnt++;
     }
+    else if(pole_cnt == 1){
+        for(int k = 0; k < 4; k++){
+          vicon_markers.push_back({x_center + 1.5*pole_radius * cos(angles[k]), y_center + 1.5*pole_radius * sin(angles[k]), z_center, Pole2});
+          vicon_markers.push_back({x_center + 1.5*pole_radius * cos(angles[k]), y_center + 1.5*pole_radius * sin(angles[k]), 0.0, Pole2});
+        }
+        pole_cnt++;
+    }
     else{
         for(int k = 0; k < 4; k++){
-          vicon_markers.push_back({x_center + pole_radius * cos(angles[k]), y_center + pole_radius * sin(angles[k]), z_center, Pole2});
-          vicon_markers.push_back({x_center + pole_radius * cos(angles[k]), y_center + pole_radius * sin(angles[k]), 0.0, Pole2});
-        }
-
-        for(int k = 0; k < 4; k++){
-            vicon_markers.push_back({x_center + ring_inner_radius * cos(angles[k]), y_center+0.1, 1.0 + ring_inner_radius * sin(angles[k]), RingInner2});
-            vicon_markers.push_back({x_center + ring_inner_radius * cos(angles[k]), y_center-0.1, 1.0 + ring_inner_radius * sin(angles[k]), RingInner2});
-        }
-
-        for(int k = 0; k < 4; k++){
-            vicon_markers.push_back({x_center + ring_outer_radius * cos(angles[k]), y_center-0.1, 1.0 + ring_outer_radius * sin(angles[k]), RingOuter2});
-            vicon_markers.push_back({x_center + ring_outer_radius * cos(angles[k]), y_center+0.1, 1.0 + ring_outer_radius * sin(angles[k]), RingOuter2});
+          vicon_markers.push_back({x_center + 1.5*pole_radius * cos(angles[k]), y_center + 1.5*pole_radius * sin(angles[k]), z_center, Pole3});
+          vicon_markers.push_back({x_center + 1.5*pole_radius * cos(angles[k]), y_center + 1.5*pole_radius * sin(angles[k]), 0.0, Pole3});
         }
     }
 }
@@ -115,7 +115,7 @@ void viconMarkersCallback(const vicon_bridge::Markers& msg) {
                 vicon_markers.push_back({ it->translation.x / 1000.0, it->translation.y / 1000.0, it->translation.z / 1000.0 + 0.1, Box });
                 vicon_markers.push_back({ it->translation.x / 1000.0, it->translation.y / 1000.0, 0.0, Box });
             }
-            if(it->segment_name == "Pole"){
+            if(it->segment_name == "Poles"){
                 float x_center = it->translation.x / 1000.0;
                 float y_center = it->translation.y / 1000.0;
                 float z_center = it->translation.z / 1000.0;
@@ -124,9 +124,6 @@ void viconMarkersCallback(const vicon_bridge::Markers& msg) {
                 
             }
         }
-
-
-        buildTrap();
 
     }
     received = true;
