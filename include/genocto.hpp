@@ -18,7 +18,7 @@ float trap_middle_length = 1.5;
 float trap_side_length = 0.65;
 int pole_cnt = 0;
 
-float pole_radius = 0.15 * sqrt(2) / 2;
+float pole_radius = 0.12 * sqrt(2) / 2 + 0.07;
 float ring_inner_radius = 0.40;
 float ring_outer_radius = ring_inner_radius + 0.1;
 
@@ -66,37 +66,37 @@ void buildPoleAndRing(double x_center, double y_center, double z_center){
 
 void buildTrap(){
   // middle block of trap
-    vicon_markers.push_back({trap_center[0] - trap_middle_length/2, trap_center[1] + 0.1, trap_center[2], TrapBlock1});
-    vicon_markers.push_back({trap_center[0] - trap_middle_length/2, trap_center[1] - 0.1, trap_center[2], TrapBlock1});
-    vicon_markers.push_back({trap_center[0] + trap_middle_length/2, trap_center[1] + 0.1, trap_center[2], TrapBlock1});
-    vicon_markers.push_back({trap_center[0] + trap_middle_length/2, trap_center[1] - 0.1, trap_center[2], TrapBlock1});
+    vicon_markers.push_back({trap_center[0] - trap_middle_length/2, trap_center[1] + 0.07, trap_center[2], TrapBlock1});
+    vicon_markers.push_back({trap_center[0] - trap_middle_length/2, trap_center[1] - 0.07, trap_center[2], TrapBlock1});
+    vicon_markers.push_back({trap_center[0] + trap_middle_length/2, trap_center[1] + 0.07, trap_center[2], TrapBlock1});
+    vicon_markers.push_back({trap_center[0] + trap_middle_length/2, trap_center[1] - 0.07, trap_center[2], TrapBlock1});
 
-    vicon_markers.push_back({trap_center[0] - trap_middle_length/2, trap_center[1] + 0.1, 0, TrapBlock1});
-    vicon_markers.push_back({trap_center[0] - trap_middle_length/2, trap_center[1] - 0.1, 0, TrapBlock1});
-    vicon_markers.push_back({trap_center[0] + trap_middle_length/2, trap_center[1] + 0.1, 0, TrapBlock1});
-    vicon_markers.push_back({trap_center[0] + trap_middle_length/2, trap_center[1] - 0.1, 0, TrapBlock1});
+    vicon_markers.push_back({trap_center[0] - trap_middle_length/2, trap_center[1] + 0.07, 0, TrapBlock1});
+    vicon_markers.push_back({trap_center[0] - trap_middle_length/2, trap_center[1] - 0.07, 0, TrapBlock1});
+    vicon_markers.push_back({trap_center[0] + trap_middle_length/2, trap_center[1] + 0.07, 0, TrapBlock1});
+    vicon_markers.push_back({trap_center[0] + trap_middle_length/2, trap_center[1] - 0.07, 0, TrapBlock1});
 
     // left side block of trap
-    vicon_markers.push_back({trap_center[0] - trap_middle_length/2 - 0.1, trap_center[1] + 0.1, trap_center[2], TrapBlock2});
-    vicon_markers.push_back({trap_center[0] - trap_middle_length/2 + 0.1, trap_center[1] + 0.1, trap_center[2], TrapBlock2});
-    vicon_markers.push_back({trap_center[0] - trap_middle_length/2 + 0.1, trap_center[1] - trap_side_length, trap_center[2], TrapBlock2});
-    vicon_markers.push_back({trap_center[0] - trap_middle_length/2 - 0.1, trap_center[1] - trap_side_length, trap_center[2], TrapBlock2});
+    vicon_markers.push_back({trap_center[0] - trap_middle_length/2 - 0.07, trap_center[1] + 0.07, trap_center[2], TrapBlock2});
+    vicon_markers.push_back({trap_center[0] - trap_middle_length/2 + 0.07, trap_center[1] + 0.07, trap_center[2], TrapBlock2});
+    vicon_markers.push_back({trap_center[0] - trap_middle_length/2 + 0.07, trap_center[1] - trap_side_length, trap_center[2], TrapBlock2});
+    vicon_markers.push_back({trap_center[0] - trap_middle_length/2 - 0.07, trap_center[1] - trap_side_length, trap_center[2], TrapBlock2});
 
-    vicon_markers.push_back({trap_center[0] - trap_middle_length/2 - 0.1, trap_center[1] + 0.1, 0, TrapBlock2});
-    vicon_markers.push_back({trap_center[0] - trap_middle_length/2 + 0.1, trap_center[1] + 0.1, 0, TrapBlock2});
-    vicon_markers.push_back({trap_center[0] - trap_middle_length/2 + 0.1, trap_center[1] - trap_side_length, 0, TrapBlock2});
-    vicon_markers.push_back({trap_center[0] - trap_middle_length/2 - 0.1, trap_center[1] - trap_side_length, 0, TrapBlock2});
+    vicon_markers.push_back({trap_center[0] - trap_middle_length/2 - 0.07, trap_center[1] + 0.07, 0, TrapBlock2});
+    vicon_markers.push_back({trap_center[0] - trap_middle_length/2 + 0.07, trap_center[1] + 0.07, 0, TrapBlock2});
+    vicon_markers.push_back({trap_center[0] - trap_middle_length/2 + 0.07, trap_center[1] - trap_side_length, 0, TrapBlock2});
+    vicon_markers.push_back({trap_center[0] - trap_middle_length/2 - 0.07, trap_center[1] - trap_side_length, 0, TrapBlock2});
 
     // right side block of trap
-    vicon_markers.push_back({trap_center[0] + trap_middle_length/2 - 0.1, trap_center[1] + 0.1, trap_center[2], TrapBlock3});
-    vicon_markers.push_back({trap_center[0] + trap_middle_length/2 + 0.1, trap_center[1] + 0.1, trap_center[2], TrapBlock3});
-    vicon_markers.push_back({trap_center[0] + trap_middle_length/2 + 0.1, trap_center[1] - trap_side_length, trap_center[2], TrapBlock3});
-    vicon_markers.push_back({trap_center[0] + trap_middle_length/2 - 0.1, trap_center[1] - trap_side_length, trap_center[2], TrapBlock3});
+    vicon_markers.push_back({trap_center[0] + trap_middle_length/2 - 0.07, trap_center[1] + 0.07, trap_center[2], TrapBlock3});
+    vicon_markers.push_back({trap_center[0] + trap_middle_length/2 + 0.07, trap_center[1] + 0.07, trap_center[2], TrapBlock3});
+    vicon_markers.push_back({trap_center[0] + trap_middle_length/2 + 0.07, trap_center[1] - trap_side_length, trap_center[2], TrapBlock3});
+    vicon_markers.push_back({trap_center[0] + trap_middle_length/2 - 0.07, trap_center[1] - trap_side_length, trap_center[2], TrapBlock3});
 
-    vicon_markers.push_back({trap_center[0] + trap_middle_length/2 - 0.1, trap_center[1] + 0.1, 0, TrapBlock3});
-    vicon_markers.push_back({trap_center[0] + trap_middle_length/2 + 0.1, trap_center[1] + 0.1, 0, TrapBlock3});
-    vicon_markers.push_back({trap_center[0] + trap_middle_length/2 + 0.1, trap_center[1] - trap_side_length, 0, TrapBlock3});
-    vicon_markers.push_back({trap_center[0] + trap_middle_length/2 - 0.1, trap_center[1] - trap_side_length, 0, TrapBlock3});
+    vicon_markers.push_back({trap_center[0] + trap_middle_length/2 - 0.07, trap_center[1] + 0.07, 0, TrapBlock3});
+    vicon_markers.push_back({trap_center[0] + trap_middle_length/2 + 0.07, trap_center[1] + 0.07, 0, TrapBlock3});
+    vicon_markers.push_back({trap_center[0] + trap_middle_length/2 + 0.07, trap_center[1] - trap_side_length, 0, TrapBlock3});
+    vicon_markers.push_back({trap_center[0] + trap_middle_length/2 - 0.07, trap_center[1] - trap_side_length, 0, TrapBlock3});
 }
 
 void viconMarkersCallback(const vicon_bridge::Markers& msg) {

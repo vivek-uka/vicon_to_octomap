@@ -58,8 +58,8 @@ int main(int argc, char **argv) {
     // buildPoleAndRing(0, 0, 0.8);
     // buildPoleAndRing(0, -1, 0.8);
     buildTrap();
-
-    received = false;
+    
+    received = true;
     bool modified = false;
     ros::Rate rate(10);
     while(ros::ok()){
