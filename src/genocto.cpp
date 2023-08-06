@@ -57,9 +57,9 @@ int main(int argc, char **argv) {
     // buildTrap();
     // buildPoleAndRing(0, 0, 0.8);
     // buildPoleAndRing(0, -1, 0.8);
-    buildTrap();
+    // buildTrap();
     
-    received = true;
+    received = false;
     bool modified = false;
     ros::Rate rate(10);
     while(ros::ok()){
@@ -92,8 +92,8 @@ int main(int argc, char **argv) {
             hull_obstacles.emplace_back(ConvexHull(vecs));
             
             // Set the dimensions of the OctoMap
-            double x_m = 6.0;  // Width in meters
-            double y_m = 6.0;  // Height in meters
+            double x_m = 5.0;  // Width in meters
+            double y_m = 5.0;  // Height in meters
             double z_m = 2.0;   // Depth in meters
 
             // Create an OctoMap with specified dimensions and resolution
